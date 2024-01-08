@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+  detector-hart:
+    image: ejpalacios/detector
+    hostname: detector-hart
+    networks:
+      - premises
+    container_name: detector-hart
+    environment:
+      - LOG_LEVEL=ERROR
+      - DB__HOST=timescaledb
+      - DB__PORT=5432
+      - DB__DATABASE=premises
+      - DB__USER=postgres
+      - DB__PASSWORD=password
+      - CLIENT__HOST=mosquitto
+      - DEVICE_ID=1SAG1100000292
+      - DETECTOR__METHOD=HART
+      - DETECTOR__EVENT_THRESHOLD=40.0
+      - DETECTOR__STATE_THRESHOLD=40.0
+    restart: always
+
+  detector-glr-voting:
+    image: ejpalacios/detector
+    hostname: detector-glr-voting
+    networks:
+      - premises
+    container_name: detector-glr-voting
+    environment:
+      - LOG_LEVEL=ERROR
+      - DB__HOST=timescaledb
+      - DB__PORT=5432
+      - DB__DATABASE=premises
+      - DB__USER=postgres
+      - DB__PASSWORD=password
+      - CLIENT__HOST=mosquitto
+      - DEVICE_ID=1SAG1100000292
+      - DETECTOR__METHOD=GLR_VOTING
+      - DETECTOR__EVENT_THRESHOLD=40.0
+      - DETECTOR__PRE_WINDOW=5
+      - DETECTOR__POS_WINDOW=5
+      - DETECTOR__EVENT_WINDOW=7
+      - DETECTOR__VOTE_THRESHOLD=6
+      - DETECTOR__MIN_STD=1
+      - DETECTOR__MAX_STD=1
+    restart: always
+
+  detector-gof-voting:
+    image: ejpalacios/detector
+    hostname: detector-gof-voting
+    networks:
+      - premises
+    container_name: detector-gof-voting
+    environment:
+      - LOG_LEVEL=ERROR
+      - DB__HOST=timescaledb
+      - DB__PORT=5432
+      - DB__DATABASE=premises
+      - DB__USER=postgres
+      - DB__PASSWORD=password
+      - CLIENT__HOST=mosquitto
+      - DEVICE_ID=1SAG1100000292
+      - DETECTOR__METHOD=GOF_VOTING
+      - DETECTOR__EVENT_THRESHOLD=40.0
+      - DETECTOR__STAT_WINDOW=5
+      - DETECTOR__EVENT_WINDOW=7
+      - DETECTOR__VOTE_THRESHOLD=6
+    restart: always
+
+networks:
+  premises:
+    external: true

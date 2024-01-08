@@ -1,0 +1,31 @@
+# Smart meter ID
+device_id: "1SAG1100000292"
+
+# Detector configuration
+detector:
+  method: "GLR_VOTING"
+  event_threshold: 50
+  pre_window: 5
+  pos_window: 5
+  event_window: 10
+  vote_threshold: 9
+  min_std: 1
+  max_std: 1000000
+
+# Source MQTT broker
+client:
+  host: "localhost"
+  port: 1883
+
+# Sink Database
+db:
+  host: "localhost"
+  port: 5432
+  database: "premises"
+  user: "postgres"
+  password: "password"
+
+# Sink MQTT broker
+mqtt:
+  host: "localhost"
+  port: 1883
