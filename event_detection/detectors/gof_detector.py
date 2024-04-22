@@ -12,6 +12,7 @@ LOGGER = logging.getLogger(__name__)
 class GOFDetector(Detector):
     """
     Event detector based on Jin 2011 paper
+    'Robust adaptive event detection in non-intrusive load monitoring for energy aware smart facilities'
 
     Args:
         event_threshold: the level used to define significant

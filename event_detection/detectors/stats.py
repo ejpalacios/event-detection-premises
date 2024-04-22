@@ -148,9 +148,10 @@ def goodness_of_fit_event(
     statistic = np.zeros(n_measurements)
     mu_pre = np.mean(pre_event, axis=0)
     mu_pos = np.mean(pos_event, axis=0)
+    pre_event += 1e-16
     state_delta = mu_pos - mu_pre
     # pos_event_norm = np.sum(pre_event) / np.sum(pos_event) * pos_event
     if (np.abs(state_delta) > event_threshold).any():
-        statistic = np.sum((pre_event - pos_event) ** 2 / pos_event, axis=0)
+        statistic = np.sum((pos_event - pre_event) ** 2 / pre_event, axis=0)
         p_value = chi2.sf(statistic, df)
     return statistic, p_value, mu_pre, mu_pos

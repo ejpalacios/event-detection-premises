@@ -5,6 +5,7 @@ import pytest
 from event_detection.detectors import (  # GOFDetector,
     GLRDetector,
     GLRVoteDetector,
+    GLRCUMVoteDetector,
     GOFVoteDetector,
     HartDetector,
 )
@@ -14,6 +15,7 @@ detectors_instances: list[Detector] = [
     HartDetector(),
     GLRDetector(range_std=(1.0, np.inf)),
     GLRVoteDetector(range_std=(1.0, np.inf)),
+    GLRCUMVoteDetector(range_std=(1.0, np.inf)),
     # GOFDetector(),  # Many false positives for low-frequency data
     GOFVoteDetector(),
 ]

@@ -13,6 +13,7 @@ LOGGER = logging.getLogger(__name__)
 
 class GLRDetector(Detector):
     """Event detector based on Luo 2002 paper
+    'Monitoring HVAC equipment electrical loads from a centralized location - Methods and field test results'
 
     Args:
         event_threshold: the level used to define significant appliances,
