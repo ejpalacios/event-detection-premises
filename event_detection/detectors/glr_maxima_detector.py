@@ -74,7 +74,7 @@ class GLRMaximaDetector(Detector):
         self._check_input_window(t_samples, samples)
         detected = False
         event = None
-        vote_time = t_samples[0]
+        vote_time = t_samples[self.maxima_precision]
 
         # Calculate GLR for last point in voting window
 
@@ -98,14 +98,14 @@ class GLRMaximaDetector(Detector):
 
         # Calculate the maximum point and check if it is in the middle
         maxima_idx = int(np.argmax(np.array(list(self.stat_w)), axis=0))
-        if maxima_idx == self.maxima_precision - 1:
+        if maxima_idx == self.maxima_precision:
             detected = True
 
         event = Event(
             timestamp=vote_time,
-            statistic_1_value=self.stat_w[maxima_idx],
+            statistic_1_value=self.stat_w[self.maxima_precision],
             statistic_1_type=self.type_1,
-            pre_event_mean=self.mu_pre_w[maxima_idx],
-            pos_event_mean=self.mu_pos_w[maxima_idx],
+            pre_event_mean=self.mu_pre_w[self.maxima_precision],
+            pos_event_mean=self.mu_pos_w[self.maxima_precision],
         )
         return detected, event
