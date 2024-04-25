@@ -1,4 +1,4 @@
-from paho.mqtt.client import Client
+import paho.mqtt.client as mqtt
 from pydantic import BaseModel
 
 
@@ -8,7 +8,7 @@ class MQTTSourceConfig(BaseModel):
     qos: int = 1
 
     @property
-    def input_stream(self) -> Client:
-        reader = Client()
+    def input_stream(self) -> mqtt.Client:
+        reader = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         reader.connect(host=self.host, port=self.port)
         return reader

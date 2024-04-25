@@ -8,7 +8,7 @@ packages = [{include = "event_detection"}]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.12"
-paho-mqtt = "^1.6.1"
+paho-mqtt = "^2.0.0"
 pyyaml = "^6.0"
 numpy = "^1.25.0"
 scipy = "^1.11.1"
@@ -23,14 +23,13 @@ isort = "^5.12.0"
 mypy = "^1.2.0"
 jupyterlab = "^4.0.4"
 ipympl = "^0.9.3"
-nbdime = "^3.2.1"
-jupyterlab-git = "^0.43.0"
 matplotlib = "^3.7.2"
 nilmtk = {git = "https://github.com/ejpalacios/nilmtk-base.git"}
+jupyterlab-git = "^0.50.0"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^8.0.0"
-pytest-cov = "^4.1.0"
+pytest = "^8.1.1"
+pytest-cov = "^5.0.0"
 
 [tool.pytest.ini_options]
 testpaths = [

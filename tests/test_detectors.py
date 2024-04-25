@@ -3,9 +3,9 @@ import pandas as pd
 import pytest
 
 from event_detection.detectors import (  # GOFDetector,
+    GLRCUMVoteDetector,
     GLRDetector,
     GLRVoteDetector,
-    GLRCUMVoteDetector,
     GOFVoteDetector,
     HartDetector,
 )

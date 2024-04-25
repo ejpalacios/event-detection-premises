@@ -4,7 +4,7 @@ from dataclasses import asdict
 from datetime import datetime
 
 import numpy as np
-from paho.mqtt.client import Client
+import paho.mqtt.client as mqtt
 from pydantic import BaseModel
 
 from event_detection.detectors.event import Event
@@ -36,7 +36,7 @@ class MQTTEventProcessorConfig(BaseModel):
 
 class MQTTEventProcessor(EventProcessor):
     def __init__(self, host: str, port: int, qos: int) -> None:
-        self._mqtt = Client()
+        self._mqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         self._mqtt.connect(host=host, port=port)
         self._qos = qos
         self._mqtt.loop_start()
