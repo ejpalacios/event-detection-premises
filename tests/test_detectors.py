@@ -39,8 +39,8 @@ def test_up_event(norm_low, norm_high, up_event, detector, dimensions):
     df = pd.DataFrame(up_event_n)
     df.index = pd.to_datetime(df.index, unit="s")
     events = detector.offline_events(df)
-    transitions = events.transitions
-    states = events.pos_states
+    transitions = events.delta_mean
+    states = events.pos_event_mean
     n_events = len(transitions.index.values)
     assert n_events == 1, f"Should have detected 1 event, got {n_events}"
     assert transitions.index.values[0] == np.datetime64(100, "s")
@@ -57,8 +57,8 @@ def test_down_event(norm_low, norm_high, down_event, detector, dimensions):
     df = pd.DataFrame(down_event_n)
     df.index = pd.to_datetime(df.index, unit="s")
     events = detector.offline_events(df)
-    transitions = events.transitions
-    states = events.pos_states
+    transitions = events.delta_mean
+    states = events.pos_event_mean
     n_events = len(transitions.index.values)
     assert n_events == 1, f"Should have detected 1 event, got {n_events}"
     assert transitions.index.values[0] == np.datetime64(100, "s")
@@ -77,8 +77,8 @@ def test_pulse_event(norm_low, norm_high, pulse_event, detector, dimensions):
     df = pd.DataFrame(pulse_event_n)
     df.index = pd.to_datetime(df.index, unit="s")
     events = detector.offline_events(df)
-    transitions = events.transitions
-    states = events.pos_states
+    transitions = events.delta_mean
+    states = events.pos_event_mean
     n_events = len(transitions.index.values)
     assert n_events == 2, f"Should have detected 2 events, got {n_events}"
     assert transitions.index.values[0] == np.datetime64(100, "s")
@@ -94,6 +94,6 @@ def test_no_event(no_event, detector, dimensions):
     no_event_n = np.repeat(no_event, dimensions, axis=1)
 
     events = detector.offline_events(pd.DataFrame(no_event_n))
-    transitions = events.transitions
+    transitions = events.delta_mean
     n_events = len(transitions.index.values)
     assert n_events == 0, f"Should have detected 0 events, got {n_events}"

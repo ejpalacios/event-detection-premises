@@ -56,10 +56,16 @@ class GOFVoteDetector(Detector):
         self.votes_w = deque(
             np.zeros((self.event_window, self.n_measurements)), maxlen=self.event_window
         )
-        self.mu_pre_w = deque(
+        self.mean_pre_w = deque(
             np.zeros((self.event_window, self.n_measurements)), maxlen=self.event_window
         )
-        self.mu_pos_w = deque(
+        self.mean_pos_w = deque(
+            np.zeros((self.event_window, self.n_measurements)), maxlen=self.event_window
+        )
+        self.median_pre_w = deque(
+            np.zeros((self.event_window, self.n_measurements)), maxlen=self.event_window
+        )
+        self.median_pos_w = deque(
             np.zeros((self.event_window, self.n_measurements)), maxlen=self.event_window
         )
 
@@ -80,11 +86,11 @@ class GOFVoteDetector(Detector):
         # Calculate GOF for last point in voting window
 
         stat_idx = self.event_window - 1
-        pre_event_data = samples[stat_idx - self.stat_window : stat_idx]
-        pos_event_data = samples[stat_idx : stat_idx + self.stat_window]
+        pre_event_samples = samples[stat_idx - self.stat_window : stat_idx]
+        pos_event_samples = samples[stat_idx : stat_idx + self.stat_window]
         stat, gof, mu_pre, mu_pos = goodness_of_fit_event(
-            pre_event=pre_event_data,
-            pos_event=pos_event_data,
+            pre_event=pre_event_samples,
+            pos_event=pos_event_samples,
             event_threshold=self.event_threshold,
         )
 
@@ -95,8 +101,11 @@ class GOFVoteDetector(Detector):
             self.stat_w.append(np.zeros((self.n_measurements)))
 
         # Keep track of the means before and after
-        self.mu_pre_w.append(mu_pre)
-        self.mu_pos_w.append(mu_pos)
+        self.mean_pre_w.append(mu_pre)
+        self.mean_pos_w.append(mu_pos)
+        # Keep track of the means before and after
+        self.median_pre_w.append(np.median(pre_event_samples))
+        self.median_pos_w.append(np.median(pos_event_samples))
 
         # Calculate the point that gets a vote
         self.votes_w.append(np.zeros((self.n_measurements), dtype=int))
@@ -114,7 +123,9 @@ class GOFVoteDetector(Detector):
             statistic_1_type=self.type_1,
             statistic_2_value=self.votes_w[0],
             statistic_2_type=self.type_2,
-            pre_event_mean=self.mu_pre_w[0],
-            pos_event_mean=self.mu_pos_w[0],
+            pre_event_mean=self.mean_pre_w[0],
+            pos_event_mean=self.mean_pos_w[0],
+            pre_event_median=self.median_pre_w[0],
+            pos_event_median=self.median_pos_w[0],
         )
         return detected, event

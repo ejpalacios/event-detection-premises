@@ -59,10 +59,16 @@ class GLRVoteDetector(Detector):
         self.votes_w = deque(
             np.zeros((self.event_window, self.n_measurements)), maxlen=self.event_window
         )
-        self.mu_pre_w = deque(
+        self.mean_pre_w = deque(
             np.zeros((self.event_window, self.n_measurements)), maxlen=self.event_window
         )
-        self.mu_pos_w = deque(
+        self.mean_pos_w = deque(
+            np.zeros((self.event_window, self.n_measurements)), maxlen=self.event_window
+        )
+        self.median_pre_w = deque(
+            np.zeros((self.event_window, self.n_measurements)), maxlen=self.event_window
+        )
+        self.median_pos_w = deque(
             np.zeros((self.event_window, self.n_measurements)), maxlen=self.event_window
         )
 
@@ -97,8 +103,11 @@ class GLRVoteDetector(Detector):
         self.stat_w.append(ll_ratio)
 
         # Keep track of the means before and after
-        self.mu_pre_w.append(mu_pre)
-        self.mu_pos_w.append(mu_pos)
+        self.mean_pre_w.append(mu_pre)
+        self.mean_pos_w.append(mu_pos)
+        # Keep track of the medians before and after
+        self.mean_pre_w.append(np.median(pre_event_data))
+        self.mean_pos_w.append(np.median(pos_event_data))
 
         # Calculate the point that gets a vote
         self.votes_w.append(np.zeros((self.n_measurements), dtype=int))
@@ -116,7 +125,9 @@ class GLRVoteDetector(Detector):
             statistic_1_type=self.type_1,
             statistic_2_value=self.votes_w[0],
             statistic_2_type=self.type_2,
-            pre_event_mean=self.mu_pre_w[0],
-            pos_event_mean=self.mu_pos_w[0],
+            pre_event_mean=self.mean_pre_w[0],
+            pos_event_mean=self.mean_pos_w[0],
+            pre_event_median=self.median_pre_w[0],
+            pos_event_median=self.median_pos_w[0],
         )
         return detected, event

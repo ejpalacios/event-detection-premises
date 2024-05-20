@@ -68,6 +68,8 @@ class HartDetector(Detector):
                 statistic_1_type=self.type_1,
                 pre_event_mean=self.last_state,
                 pos_event_mean=self.est_state,
+                pre_event_median=self.last_state,
+                pos_event_median=self.est_state,
             )
             if event is not None:
                 self._event_buffer.add_event(event.timestamp, event)
@@ -88,6 +90,8 @@ class HartDetector(Detector):
             statistic_1_type=self.type_1,
             pre_event_mean=self.last_state,
             pos_event_mean=self.est_state,
+            pre_event_median=self.last_state,
+            pos_event_median=self.est_state,
         )
         measurement = samples[1]
         previous_measurement = samples[0]

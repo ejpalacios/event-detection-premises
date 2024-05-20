@@ -18,6 +18,12 @@ class Event:
     # np.ndarray: Mean values of pre-event window
     pos_event_mean: np.ndarray
 
+    # np.ndarray: Median values of post-event window
+    pre_event_median: np.ndarray
+
+    # np.ndarray: Median values of pre-event window
+    pos_event_median: np.ndarray
+
     # str: Type of event metric
     statistic_1_type: str
 
@@ -34,9 +40,16 @@ class Event:
     features: Optional[object] = field(default=None)
 
     @property
+    # np.ndarray: Delta between post-event and pre-event means
     def delta_mean(self) -> np.ndarray:
         """np.ndarray: Different between mean post- and pre-event windows"""
         return self.pos_event_mean - self.pre_event_mean
+
+    @property
+    # np.ndarray: Delta between post-event and pre-event medians
+    def delta_median(self) -> np.ndarray:
+        """np.ndarray: Different between mean post- and pre-event windows"""
+        return self.pos_event_median - self.pre_event_median
 
 
 class EventBuffer:
@@ -70,18 +83,33 @@ class EventBuffer:
         return self._event_buffer
 
     @property
-    def transitions(self) -> pd.DataFrame:
+    def delta_mean(self) -> pd.DataFrame:
         events = [value.delta_mean for value in self._event_buffer.values()]
         return self._build_df(events)
 
     @property
-    def pos_states(self) -> pd.DataFrame:
+    def delta_median(self) -> pd.DataFrame:
+        events = [value.delta_median for value in self._event_buffer.values()]
+        return self._build_df(events)
+
+    @property
+    def pos_event_mean(self) -> pd.DataFrame:
         events = [value.pos_event_mean for value in self._event_buffer.values()]
         return self._build_df(events)
 
     @property
-    def pre_states(self) -> pd.DataFrame:
+    def pre_event_mean(self) -> pd.DataFrame:
         events = [value.pre_event_mean for value in self._event_buffer.values()]
+        return self._build_df(events)
+
+    @property
+    def pos_event_median(self) -> pd.DataFrame:
+        events = [value.pos_event_median for value in self._event_buffer.values()]
+        return self._build_df(events)
+
+    @property
+    def pre_event_median(self) -> pd.DataFrame:
+        events = [value.pre_event_median for value in self._event_buffer.values()]
         return self._build_df(events)
 
     @property

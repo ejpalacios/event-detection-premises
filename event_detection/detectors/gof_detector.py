@@ -1,5 +1,6 @@
 import logging
 
+import numpy as np
 import pandas as pd
 
 from .detector import Detector
@@ -56,11 +57,11 @@ class GOFDetector(Detector):
         time = t_samples[self.stat_window]
 
         stat_idx = self.stat_window
-        pre_event_data = samples[stat_idx - self.stat_window : stat_idx]
-        pos_event_data = samples[stat_idx : stat_idx + self.stat_window]
+        pre_event_samples = samples[stat_idx - self.stat_window : stat_idx]
+        pos_event_samples = samples[stat_idx : stat_idx + self.stat_window]
         stat, gof, mu_pre, mu_pos = goodness_of_fit_event(
-            pre_event=pre_event_data,
-            pos_event=pos_event_data,
+            pre_event=pre_event_samples,
+            pos_event=pos_event_samples,
             event_threshold=self.event_threshold,
         )
         if (gof < self.stat_threshold).any():
@@ -71,5 +72,7 @@ class GOFDetector(Detector):
             statistic_1_type=self.type_1,
             pre_event_mean=mu_pre,
             pos_event_mean=mu_pos,
+            pre_event_median=np.median(pre_event_samples),
+            pos_event_median=np.median(pos_event_samples),
         )
         return detected, event

@@ -79,6 +79,8 @@ class GLRDetector(Detector):
             statistic_1_type=self.type_1,
             pre_event_mean=mu_pre,
             pos_event_mean=mu_pos,
+            pre_event_median=np.median(pre_event_samples),
+            pos_event_median=np.median(pos_event_samples),
         )
 
         return detected, event
