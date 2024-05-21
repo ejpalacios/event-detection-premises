@@ -49,7 +49,10 @@ class GLRMaximaDetector(Detector):
         self.maxima_precision = maxima_precision
         self.event_window = 2 * self.maxima_precision + 1
         self.range_std = range_std
-        super().__init__(measurements, self.event_window + self.pos_window)
+        super().__init__(
+            measurements,
+            np.min(self.event_window, self.pre_window + 1) + self.pos_window,
+        )
 
     def _init_state(self):
         self.stat_w = deque(
@@ -84,7 +87,7 @@ class GLRMaximaDetector(Detector):
 
         # Calculate GLR for last point in voting window
 
-        stat_idx = self.event_window - 1
+        stat_idx = self.total_length_w - self.pos_window - 1
         measurement = np.array([samples[stat_idx]])
         pre_event_data = samples[stat_idx - self.pre_window : stat_idx]
         pos_event_data = samples[stat_idx + 1 : stat_idx + self.pos_window + 1]
