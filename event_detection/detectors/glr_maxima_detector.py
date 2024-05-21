@@ -73,7 +73,7 @@ class GLRMaximaDetector(Detector):
 
     @property
     def offset_start_w(self) -> int:
-        return self.event_window - 1
+        return np.maximum(self.event_window, self.pre_window) - 1
 
     @property
     def offset_end_w(self) -> int:
