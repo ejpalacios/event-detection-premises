@@ -2,6 +2,10 @@
 
 Collection of event detection algorithms for NILM implemented in `python`.
 
+## Conceptual diagram of the algorithms
+
+![Algorithm windows](./img/window-algorihtms.png)
+
 ## Publication
 
 If you use the event detection algorithms provided in this repository please remember to cite our paper:
