@@ -51,7 +51,7 @@ class GLRMaximaDetector(Detector):
         self.range_std = range_std
         super().__init__(
             measurements,
-            np.minimum(self.event_window, self.pre_window + 1) + self.pos_window,
+            np.maximum(self.event_window, self.pre_window + 1) + self.pos_window,
         )
 
     def _init_state(self):
