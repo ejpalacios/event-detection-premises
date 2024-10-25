@@ -47,7 +47,10 @@ class GOFVoteDetector(Detector):
         self.stat_threshold = stat_threshold
         self.event_window = event_window
         self.vote_threshold = vote_threshold
-        super().__init__(measurements, self.event_window + self.stat_window - 1)
+        super().__init__(
+            measurements,
+            np.maximum(self.event_window, self.stat_window + 1) + self.stat_window - 1,
+        )
 
     def _init_state(self):
         self.stat_w = deque(
@@ -71,7 +74,7 @@ class GOFVoteDetector(Detector):
 
     @property
     def offset_start_w(self) -> int:
-        return self.event_window - 1
+        return np.maximum(self.event_window - 1, self.stat_window)
 
     @property
     def offset_end_w(self) -> int:
@@ -81,11 +84,10 @@ class GOFVoteDetector(Detector):
         self._check_input_window(t_samples, samples)
         detected = False
         event = None
-        vote_time = t_samples[0]
 
         # Calculate GOF for last point in voting window
 
-        stat_idx = self.event_window - 1
+        stat_idx = self.total_length_w - self.stat_window
         pre_event_samples = samples[stat_idx - self.stat_window : stat_idx]
         pos_event_samples = samples[stat_idx : stat_idx + self.stat_window]
         stat, gof, mu_pre, mu_pos = goodness_of_fit_event(
@@ -118,7 +120,7 @@ class GOFVoteDetector(Detector):
             detected = True
 
         event = Event(
-            timestamp=vote_time,
+            timestamp=t_samples[stat_idx - self.event_window + 1],
             statistic_1_value=self.stat_w[0],
             statistic_1_type=self.type_1,
             statistic_2_value=self.votes_w[0],

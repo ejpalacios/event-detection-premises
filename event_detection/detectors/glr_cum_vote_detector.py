@@ -50,7 +50,9 @@ class GLRCUMVoteDetector(Detector):
         self.vote_threshold = vote_threshold
         self.range_std = range_std
         super().__init__(
-            measurements, self.event_window + self.event_window - 1 + self.pos_window
+            measurements,
+            np.maximum(self.event_window + self.event_window - 1, self.pre_window + 1)
+            + self.pos_window,
         )
 
     def _init_state(self) -> None:
@@ -91,7 +93,9 @@ class GLRCUMVoteDetector(Detector):
 
     @property
     def offset_start_w(self) -> int:
-        return self.event_window - 1
+        return np.maximum(
+            self.event_window - 1, self.pre_window + 1 - self.event_window
+        )
 
     @property
     def offset_end_w(self) -> int:
@@ -102,9 +106,8 @@ class GLRCUMVoteDetector(Detector):
         detected = False
         event = None
 
-        vote_time = t_samples[0]
         # Calculate GLR for last point in cumulative window
-        stat_idx = 2 * (self.event_window - 1)
+        stat_idx = self.total_length_w - self.pos_window - 1
         measurement = np.array([samples[stat_idx]])
         pre_event_samples = samples[stat_idx - self.pre_window : stat_idx]
         pos_event_samples = samples[stat_idx + 1 : stat_idx + self.pos_window + 1]
@@ -118,8 +121,8 @@ class GLRCUMVoteDetector(Detector):
         self.ll_ratios_w.append(ll_ratio)
         self.mean_pre_w.append(mu_pre)
         self.mean_pos_w.append(mu_pos)
-        self.mean_pre_w.append(np.median(pre_event_samples))
-        self.mean_pos_w.append(np.median(pos_event_samples))
+        self.median_pre_w.append(np.median(pre_event_samples))
+        self.median_pos_w.append(np.median(pos_event_samples))
 
         # Calculate cumulative GLR for first point in window
         ll_cum = np.sum(np.array(list(self.ll_ratios_w)), axis=0)
@@ -146,7 +149,7 @@ class GLRCUMVoteDetector(Detector):
         if (self.votes_w[0] > self.vote_threshold).any():
             detected = True
         event = Event(
-            timestamp=vote_time,
+            timestamp=t_samples[stat_idx - (2 * self.event_window - 1) + 1],
             statistic_1_value=self.ll_cum_w[0],
             statistic_1_type=self.type_1,
             statistic_2_value=self.votes_w[0],
