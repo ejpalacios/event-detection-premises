@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "event_detection"}]
 
 [tool.poetry.dependencies]
-python = ">=3.13"
+python = ">=3.13,<3.14"
 paho-mqtt = "^2.0.0"
 pyyaml = "^6.0"
 numpy = "<2.0.0"
